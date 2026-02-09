@@ -80,7 +80,8 @@ section .infos{
     flex-grow: 1;
     display:  grid;
     grid-row:auto;
-    
+    grid-template-columns: repeat(auto-fill, 30px);
+    grid-template-rows: repeat(auto-fill, 30px);
     
 }
 
