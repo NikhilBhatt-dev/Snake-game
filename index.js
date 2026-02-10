@@ -40,7 +40,7 @@ function render(){
 
      let head = null;
 
-      blocks[`${segment.x}-${segment.y}`].classList.add("food");
+      blocks[`${food.x}-${food.y}`].classList.add("food");
      
 
      if (direction === "left") {
@@ -68,7 +68,7 @@ function render(){
           }
             blocks[`${food.x}-${food.y}`].classList.add("food");
 
-            snake.unshift(head);
+            snake.unshift(head);  //reason behind snake increse size 
      
      }
      snake.forEach((segment) => {
@@ -85,10 +85,10 @@ function render(){
 }
 // how snake move  ? snake speed is 300ms
 
-intervalId = setInterval(() => {
+// intervalId = setInterval(() => {
 
-    render()
-}, 300);
+//     render()
+// }, 300);
 
 
 
