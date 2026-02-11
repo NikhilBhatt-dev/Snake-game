@@ -14,14 +14,17 @@ const timeElement = document.querySelector("#time")
 const blockHeight = 50;
 const blockWidth = 50;
 
-let HighScore = 0
+let highScore = localStorage.getItem("highScore") || 0
 let score = 0;
 let time = `00-00`
+
+HighScoreElement.innerText = highScore
 
 const cols = Math.floor(board.clientWidth / blockWidth);
 const rows = Math.floor(board.clientHeight / blockHeight);
 
 let intervalId = null;
+let timerIntervalId = null;
 // create random food
 let food =
     { x: Math.floor(Math.random() * rows), y: Math.floor(Math.random() * cols) }
@@ -53,71 +56,78 @@ for (let row = 0; row < rows; row++) {
 
 // How Snake move
 function render() {
+  let head = null;
 
-    let head = null;
+  blocks[`${food.x}-${food.y}`].classList.add("food");
 
+  if (direction === "left") {
+    head = { x: snake[0].x, y: snake[0].y - 1 };
+  } else if (direction === "right") {
+    head = { x: snake[0].x, y: snake[0].y + 1 };
+  } else if (direction === "down") {
+    head = { x: snake[0].x + 1, y: snake[0].y };
+  } else if (direction === "up") {
+    head = { x: snake[0].x - 1, y: snake[0].y };
+  }
+
+  if (head.x < 0 || head.x >= rows || head.y < 0 || head.y >= cols) {
+    clearInterval(intervalId);
+
+    modal.style.display = "flex";
+    startGameModal.style.display = "none";
+    gameOverModal.style.display = "flex";
+    return;
+  }
+
+  // how snake consume  food ?
+  // how snake move  ? snake speed is 300ms
+  if (head.x == food.x && head.y == food.y) {
+    blocks[`${food.x}-${food.y}`].classList.remove("food");
+    food = {
+      x: Math.floor(Math.random() * rows),
+      y: Math.floor(Math.random() * cols),
+    };
     blocks[`${food.x}-${food.y}`].classList.add("food");
 
+    snake.unshift(head); //reason behind snake increse size
+    score += 10;
+    scoreElement.innerText = score;
 
-    if (direction === "left") {
-        head = { x: snake[0].x, y: snake[0].y - 1 };
-    } else if (direction === "right") {
-        head = { x: snake[0].x, y: snake[0].y + 1 };
-    } else if (direction === "down") {
-        head = { x: snake[0].x + 1, y: snake[0].y };
-    } else if (direction === "up") {
-        head = { x: snake[0].x - 1, y: snake[0].y };
+    if (score > highScore) {
+      highScore = score;
+      localStorage.setItem("highScore", highScore.toString());
     }
+  }
+  snake.forEach((segment) => {
+    blocks[`${segment.x}-${segment.y}`].classList.remove("fill");
+  });
 
-    if (head.x < 0 || head.x >= rows || head.y < 0 || head.y >= cols) {
-        clearInterval(intervalId);
+  snake.unshift(head);
+  snake.pop();
 
-        modal.style.display = "flex";
-        startGameModal.style.display = "none";
-        gameOverModal.style.display = "flex"
-        return;
-
-
-
-    }
-
-
-    // how snake consume  food
-    if (head.x == food.x && head.y == food.y) {
-        blocks[`${food.x}-${food.y}`].classList.remove("food")
-        food = {
-            x: Math.floor(Math.random() * rows), y: Math.floor(Math.random() * cols)
-        }
-        blocks[`${food.x}-${food.y}`].classList.add("food");
-
-        snake.unshift(head);  //reason behind snake increse size 
-        score += 10;
-        scoreElement.innerText = score
-    }
-    snake.forEach((segment) => {
-        blocks[`${segment.x}-${segment.y}`].classList.remove("fill");
-    });
-
-    snake.unshift(head);
-    snake.pop();
-
-    snake.forEach(segment => {
-        blocks[`${segment.x}-${segment.y}`].classList.add("fill")
-    })
-
+  snake.forEach((segment) => {
+    blocks[`${segment.x}-${segment.y}`].classList.add("fill");
+  });
 }
 // how snake move  ? snake speed is 300ms
-
-intervalId = setInterval(() => {
-
-    render()
-}, 300);
 
 
 // start button
 
 startButton.addEventListener("click", () => {
     modal.style.display = "none"
+    timerIntervalId =setInterval(() => { render()}, 300)
+    timerIntervalId = setInterval (() =>{
+        let [min, sec ] = time.split("-").map(Number)
+        if(sec==59){
+            min+=1
+            sec=0
+        }else{
+            sec+=1
+        }
+        time = `${min}`
+
+    })
     intervalId = setInterval(() => { render() }, 300)
 })
 
@@ -136,6 +146,7 @@ restartButton.addEventListener("click", restartGame)
 
 // }
 
+//restart
 function restartGame() {
     clearInterval(intervalId);
 
@@ -153,10 +164,16 @@ function restartGame() {
         y: Math.floor(Math.random() * cols),
     };
 
+    score = 0
+    time =`00-00`
+    scoreElement,innerText = score
+    timeElement.innerText = time
+    HighScoreElement.innerText = highScore
     modal.style.display = "none";
 
     intervalId = setInterval(render, 300);
 }
+
 
 // arrowkeys working?
 
@@ -179,5 +196,3 @@ addEventListener("keydown", (event) => {
 
 
 
-
-// 1.5
