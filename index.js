@@ -79,6 +79,19 @@ function render() {
     return;
   }
 
+    // Self collision check
+if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+    clearInterval(intervalId);
+    clearInterval(timerIntervalId);
+
+    modal.style.display = "flex";
+    startGameModal.style.display = "none";
+    gameOverModal.style.display = "flex";
+    return;
+}
+
+    
+
   // how snake consume  food ?
   // how snake move  ? snake speed is 300ms
   if (head.x == food.x && head.y == food.y) {
