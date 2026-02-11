@@ -48,7 +48,6 @@ for (let row = 0; row < rows; row++) {
         const block = document.createElement("div");
         block.classList.add("block")
         board.appendChild(block);
-        block.innerText = `${row}-${col}`;
         blocks[`${row}-${col}`] = block
     }
 
@@ -73,6 +72,7 @@ function render() {
   if (head.x < 0 || head.x >= rows || head.y < 0 || head.y >= cols) {
     clearInterval(intervalId);
 
+
     modal.style.display = "flex";
     startGameModal.style.display = "none";
     gameOverModal.style.display = "flex";
@@ -87,9 +87,8 @@ function render() {
       x: Math.floor(Math.random() * rows),
       y: Math.floor(Math.random() * cols),
     };
-    blocks[`${food.x}-${food.y}`].classList.add("food");
-
-    snake.unshift(head); //reason behind snake increse size
+   
+    snake.unshift(head);
     score += 10;
     scoreElement.innerText = score;
 
@@ -102,7 +101,7 @@ function render() {
     blocks[`${segment.x}-${segment.y}`].classList.remove("fill");
   });
 
-  snake.unshift(head);
+  snake.unshift(head); //reason behind snake increse size
   snake.pop();
 
   snake.forEach((segment) => {
@@ -116,7 +115,9 @@ function render() {
 
 startButton.addEventListener("click", () => {
     modal.style.display = "none"
-    timerIntervalId =setInterval(() => { render()}, 300)
+    intervalId = setInterval(() => {
+      render();
+    }, 300);
     timerIntervalId = setInterval (() =>{
         let [min, sec ] = time.split("-").map(Number)
         if(sec==59){
@@ -125,10 +126,11 @@ startButton.addEventListener("click", () => {
         }else{
             sec+=1
         }
-        time = `${min}`
+        time = `${min}-${sec}`
+        timeElement.innerText = time
 
-    })
-    intervalId = setInterval(() => { render() }, 300)
+    },1000)
+    
 })
 
 restartButton.addEventListener("click", restartGame)
@@ -148,6 +150,7 @@ restartButton.addEventListener("click", restartGame)
 
 //restart
 function restartGame() {
+    
     clearInterval(intervalId);
 
     snake.forEach((segment) => {
@@ -166,7 +169,7 @@ function restartGame() {
 
     score = 0
     time =`00-00`
-    scoreElement,innerText = score
+    scoreElement.innerText = score
     timeElement.innerText = time
     HighScoreElement.innerText = highScore
     modal.style.display = "none";
@@ -188,11 +191,6 @@ addEventListener("keydown", (event) => {
         direction = "right";
     }
 });
-
-
-
-
-
 
 
 
