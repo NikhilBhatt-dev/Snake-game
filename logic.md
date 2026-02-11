@@ -1,8 +1,6 @@
 # 🐍 Snake Game Logic Documentation (logic.md)
 
-Ye file explain karti hai ki Snake game ka core logic kaise kaam karta hai.
 
----
 
 # 1️⃣ Snake Movement Logic
 
@@ -263,7 +261,3 @@ Snake = Array of body parts
 Head = snake[0]
 Movement = Add head + Remove tail
 Growth = Add head only
-
----
-
-Ye complete logical breakdown hai tumhare Snake game ka.
